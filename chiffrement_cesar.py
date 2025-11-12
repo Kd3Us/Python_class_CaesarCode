@@ -1,48 +1,31 @@
 import string
 
-def caesar_cipher(text, shift):
-    alphabet = string.ascii_lowercase
-    encrypted_text = ""
+def caesar_transform(text, shift):
+    result = ""
     
     for character in text:
-        if character in alphabet:
-            current_position = alphabet.index(character)
+        if character in string.ascii_lowercase:
+            current_position = string.ascii_lowercase.index(character)
             new_position = (current_position + shift) % 26
-            new_letter = alphabet[new_position]
-            encrypted_text += new_letter
+            result += string.ascii_lowercase[new_position]
         elif character in string.ascii_uppercase:
             current_position = string.ascii_uppercase.index(character)
             new_position = (current_position + shift) % 26
-            new_letter = string.ascii_uppercase[new_position]
-            encrypted_text += new_letter
+            result += string.ascii_uppercase[new_position]
         else:
-            encrypted_text += character
+            result += character
     
-    return encrypted_text
+    return result
+
+def caesar_cipher(text, shift):
+    return caesar_transform(text, shift)
 
 print("\n")
 print(caesar_cipher("Hello World", 3))
 print("\n")
 
 def caesar_decipher(encrypted_text, shift):
-    alphabet = string.ascii_lowercase
-    decrypted_text = ""
-    
-    for character in encrypted_text:
-        if character in alphabet:
-            current_position = alphabet.index(character)
-            new_position = (current_position - shift) % 26
-            new_letter = alphabet[new_position]
-            decrypted_text += new_letter
-        elif character in string.ascii_uppercase:
-            current_position = string.ascii_uppercase.index(character)
-            new_position = (current_position - shift) % 26
-            new_letter = string.ascii_uppercase[new_position]
-            decrypted_text += new_letter
-        else:
-            decrypted_text += character
-    
-    return decrypted_text
+    return caesar_transform(encrypted_text, -shift)
 
 print(caesar_decipher("Khoor Zruog", 3))
 print("\n")
@@ -57,39 +40,29 @@ def brute_force_caesar(encrypted_text):
 
 brute_force_caesar("Wklv Lv D Vhfuhw")
 
-def vigenere_cipher(text, key):
-    alphabet = string.ascii_lowercase
-    encrypted_text = ""
+def vigenere_transform(text, key, encrypt):
+    result = ""
     key_index = 0
     
     for character in text:
-        if character in alphabet or character in string.ascii_uppercase:
-            shift = alphabet.index(key[key_index % len(key)].lower())
-            encrypted_char = caesar_cipher(character, shift)
-            encrypted_text += encrypted_char
+        if character in string.ascii_lowercase or character in string.ascii_uppercase:
+            shift = string.ascii_lowercase.index(key[key_index % len(key)].lower())
+            if not encrypt:
+                shift = -shift
+            result += caesar_transform(character, shift)
             key_index += 1
         else:
-            encrypted_text += character
+            result += character
     
-    return encrypted_text
+    return result
+
+def vigenere_cipher(text, key):
+    return vigenere_transform(text, key, True)
 
 print(vigenere_cipher("Hello World", "key"))
 
 def vigenere_decipher(encrypted_text, key):
-    alphabet = string.ascii_lowercase
-    decrypted_text = ""
-    key_index = 0
-    
-    for character in encrypted_text:
-        if character in alphabet or character in string.ascii_uppercase:
-            shift = alphabet.index(key[key_index % len(key)].lower())
-            decrypted_char = caesar_decipher(character, shift)
-            decrypted_text += decrypted_char
-            key_index += 1
-        else:
-            decrypted_text += character
-    
-    return decrypted_text
+    return vigenere_transform(encrypted_text, key, False)
 
 encrypted = vigenere_cipher("Hello World", "key")
 print(f"Encrypted: {encrypted}")
