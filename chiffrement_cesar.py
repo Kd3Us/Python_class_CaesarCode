@@ -2,14 +2,14 @@ import string
 import re
 
 def caesar_transform(text, shift):
-    result = ""
+    result = []
     
     for character in text:
         unicode_value = ord(character)
         shifted_value = (unicode_value + shift) % 1114112
-        result += chr(shifted_value)
+        result.append(chr(shifted_value))
     
-    return result
+    return ''.join(result)
 
 def caesar_cipher(text, shift):
     return caesar_transform(text, shift)
@@ -40,17 +40,17 @@ def brute_force_caesar(encrypted_text):
 brute_force_caesar(encrypted_caesar)
 
 def vigenere_transform(text, key, encrypt):
-    result = ""
+    result = []
     key_index = 0
     
     for character in text:
         shift = ord(key[key_index % len(key)])
         if not encrypt:
             shift = -shift
-        result += caesar_transform(character, shift)
+        result.append(caesar_transform(character, shift))
         key_index += 1
     
-    return result
+    return ''.join(result)
 
 def vigenere_cipher(text, key):
     return vigenere_transform(text, key, True)
